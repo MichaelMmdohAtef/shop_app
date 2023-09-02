@@ -54,6 +54,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
+      SystemUiOverlay.bottom,SystemUiOverlay.top
+    ]);
     return BlocProvider(create:(context)=>
     token==null?ShopAppCubit():
     ShopAppCubit()..getDataModel()
@@ -78,14 +81,13 @@ class MyApp extends StatelessWidget {
                 titleTextStyle: TextStyle(
                 color:Colors.indigo,
                 fontSize: 25,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.bold,
                   letterSpacing: 1,
             ),
               systemOverlayStyle: SystemUiOverlayStyle(
                 statusBarColor: Colors.white,
                 statusBarIconBrightness: Brightness.dark,
               ),
-              backwardsCompatibility:false ,
             ),
             bottomNavigationBarTheme: BottomNavigationBarThemeData(
             selectedItemColor: Colors.indigo,

@@ -49,7 +49,10 @@ class ProductModel{
   dynamic? discount;
   String? image;
   String? name;
+  String? description;
+  List<String> images=[];
   bool? isFavorite;
+  bool? inCart;
 
 
   ProductModel(Map<String,dynamic> products){
@@ -59,7 +62,12 @@ class ProductModel{
     this.discount=products["discount"];
     this.image=products["image"];
     this.name=products["name"];
+    this.description=products['description'];
+    products['images'].forEach((element){
+      images.add(element);
+    });
     this.isFavorite=products["in_favorites"];
+    this.inCart=products["in_cart"];
   }
 
 }

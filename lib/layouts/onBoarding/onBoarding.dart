@@ -104,7 +104,7 @@ class OnBoardingScreen extends StatelessWidget {
                 Expanded(
                   child: Center(
                     child: SmoothPageIndicator(
-                      controller:boardingController ,
+                      controller:boardingController,
                       count: cubit.listModel!.length,
                       effect: ExpandingDotsEffect(
                         dotColor: Colors.grey,
