@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/layouts/shopApp_Layout/cubit/states.dart';
 import 'package:shop_app/models/category_model.dart';
-import 'package:shop_app/models/change_favorite_data.dart';
+import 'package:shop_app/models/change_favorite_and_cart_data.dart';
+import 'package:shop_app/models/get_carts.dart';
 import 'package:shop_app/models/home_model.dart';
 import 'package:shop_app/modules/categories/Categories_screen.dart';
 import 'package:shop_app/modules/favorities/favorities_screen.dart';
 import 'package:shop_app/modules/home/home_screen.dart';
 import 'package:shop_app/modules/settings/settings_screen.dart';
+import 'package:shop_app/shared/components/components.dart';
 import 'package:shop_app/shared/components/constants.dart';
 import 'package:shop_app/shared/network/remote/dio_helper.dart';
 import 'package:shop_app/shared/network/remote/end_points.dart';
@@ -24,9 +26,11 @@ class ShopAppCubit extends Cubit<ShopAppStates>{
   static ShopAppCubit get(context)=>BlocProvider.of(context);
   HomeModel? homeModel;
   CategoryModelData? categories;
-  Map<int?,bool?>? favorities={};
+  Map<int?,bool?>? favourites={};
+  Map<int?,bool?>? carts={};
   int currentIndex=0;
-  GetFavorites? favorites;
+  GetFavorites? favouriteModel;
+  GetCarts? cartModel;
   bool checkHomeModel=false;
   bool checkCategories=false;
   List<Widget> screens=[
@@ -60,7 +64,8 @@ class ShopAppCubit extends Cubit<ShopAppStates>{
 
      await changeProductModel(HomeModel.fromjson(value.data));
       this.homeModel!.model!.products.forEach((e) {
-        favorities!.addAll({e.id:e.isFavorite});
+        favourites!.addAll({e.id:e.isFavorite});
+        carts!.addAll({e.id:e.inCart});
       });
       emit(OnSuccessGetModelData());
     }).catchError((onError){
@@ -94,12 +99,12 @@ class ShopAppCubit extends Cubit<ShopAppStates>{
       emit(OnErrorCategoriesData());
     });
   }
-  ChangeFavoriteData? changeFavoriteData;
+  ChangeFavoriteAndCartData? changeFavoriteData;
   changeFavorites(id){
-    favorities![id]= !favorities![id]!;
+    favourites![id]= !favourites![id]!;
     emit(OnLoadingChangeFavoritesData());
     DioHelper.postData(url: FAVORITES,data:{"product_id":id} ,token: token).then((value) {
-      changeFavoriteData=ChangeFavoriteData.fromjson(value.data);
+      changeFavoriteData=ChangeFavoriteAndCartData.fromjson(value.data);
       getFavourites();
       emit(OnSuccessChangeFavoritesData(changeFavoriteData));
     }).catchError((onError){
@@ -112,13 +117,13 @@ class ShopAppCubit extends Cubit<ShopAppStates>{
     emit(OnLoadingFavouritesData());
     DioHelper.getData(url: FAVORITES,token: token).then((value) {
 
-      favorites=GetFavorites.fromjson(value.data);
-      if(favorites!.status==true){
-        favorites=favorites;
+      favouriteModel=GetFavorites.fromjson(value.data);
+      if(favouriteModel!.status==true){
+        favouriteModel=favouriteModel;
       }else{
-        favorites=null;
+        favouriteModel=null;
       }
-      print(favorites!.model!.data![1].products!.id);
+      print(favouriteModel!.model!.data![1].products!.id);
 
       emit(OnSuccessFavouritesData());
     }).catchError((onError){
@@ -141,6 +146,46 @@ class ShopAppCubit extends Cubit<ShopAppStates>{
     }).catchError((onError){
       print(onError.toString());
       emit(OnErrorSearchData());
+    });
+  }
+
+  checkIfItemInCart(int id){
+    if(carts![id]==true){
+      toast(message: "this product is already exist in your cart", status: toastStatus.SUCCESS);
+    }else{
+      changeCarts(id);
+      toast(message: "this product has been added Successfully in your cart", status: toastStatus.SUCCESS);
+    }
+  }
+
+  ChangeFavoriteAndCartData? changeCartData;
+  changeCarts(id){
+    emit(OnLoadingChangeFavoritesData());
+    DioHelper.postData(url: "carts",data:{"product_id":id} ,token: token).then((value) {
+      changeCartData=ChangeFavoriteAndCartData.fromjson(value.data);
+      getCarts();
+      getDataModel();
+      emit(OnSuccessChangeFavoritesData(changeCartData));
+    }).catchError((onError){
+      print(onError.toString());
+      emit(OnErrorChangeFavoritesData());
+    });
+  }
+
+  getCarts(){
+    emit(OnLoadingFavouritesData());
+    DioHelper.getData(url: "carts",token: token).then((value) {
+      cartModel=GetCarts.fromjson(value.data);
+      if(cartModel!.status==true){
+        cartModel=cartModel;
+      }else{
+        cartModel=null;
+      }
+      print(cartModel!.data!.items![1].products!.id);
+      emit(OnSuccessFavouritesData());
+    }).catchError((onError){
+      print(onError.toString());
+      emit(OnErrorFavouritesData());
     });
   }
 

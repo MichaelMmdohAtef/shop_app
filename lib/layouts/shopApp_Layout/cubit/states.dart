@@ -1,4 +1,4 @@
-import '../../../models/change_favorite_data.dart';
+import '../../../models/change_favorite_and_cart_data.dart';
 
 abstract class ShopAppStates{}
 
@@ -18,7 +18,7 @@ class OnErrorCategoriesData extends ShopAppStates{}
 
 class OnLoadingChangeFavoritesData extends ShopAppStates{}
 class OnSuccessChangeFavoritesData extends ShopAppStates{
-  ChangeFavoriteData? model;
+  ChangeFavoriteAndCartData? model;
   OnSuccessChangeFavoritesData(this.model);
 }
 class OnErrorChangeFavoritesData extends ShopAppStates{}

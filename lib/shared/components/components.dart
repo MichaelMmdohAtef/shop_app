@@ -209,7 +209,7 @@ Widget productItem(var model, BuildContext context,
                       },
                       icon: CircleAvatar(
                         backgroundColor:
-                            ShopAppCubit.get(context).favorities![model.id] ==
+                            ShopAppCubit.get(context).favourites![model.id] ==
                                     true
                                 ? Colors.blueAccent
                                 : Colors.grey,

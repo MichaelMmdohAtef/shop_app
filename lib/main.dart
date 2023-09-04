@@ -61,7 +61,8 @@ class MyApp extends StatelessWidget {
     token==null?ShopAppCubit():
     ShopAppCubit()..getDataModel()
         ..getCategories()
-        ..getFavourites(),
+        ..getFavourites()
+      ..getCarts(),
     child: BlocConsumer<ShopAppCubit,ShopAppStates>(
       listener:(context,states){} ,
       builder:(context,states){
