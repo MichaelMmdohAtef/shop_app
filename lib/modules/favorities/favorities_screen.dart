@@ -19,11 +19,11 @@ class FavoritesScreen extends StatelessWidget {
         var cubit=ShopAppCubit.get(context);
         return Scaffold(
           body:ConditionalBuilder(
-              condition: cubit.favorites!=null,
+              condition: cubit.favouriteModel!=null,
               builder: (context)=>ListView.separated(
-                  itemBuilder: (context,index)=>productItem(cubit.favorites!.model!.data[index].products,context),
+                  itemBuilder: (context,index)=>productItem(cubit.favouriteModel!.model!.data[index].products,context),
                   separatorBuilder:(context,index)=>myDevider(),
-                  itemCount: cubit.favorites!.model!.data.length),
+                  itemCount: cubit.favouriteModel!.model!.data.length),
               fallback:(context)=>Center(child: Text("No Favorites Exist",
               style: TextStyle(
                 fontSize: 40,
@@ -105,7 +105,7 @@ class FavoritesScreen extends StatelessWidget {
                       IconButton(onPressed: (){
                         ShopAppCubit.get(context).changeFavorites(model.id);
                       }, icon: CircleAvatar(
-                        backgroundColor:ShopAppCubit.get(context).favorities![model.id]==true? Colors.blueAccent:Colors.grey,
+                        backgroundColor:ShopAppCubit.get(context).favourites![model.id]==true? Colors.blueAccent:Colors.grey,
                         child: Icon(Icons.favorite_border,
                           color: Colors.white,
                         ),),)

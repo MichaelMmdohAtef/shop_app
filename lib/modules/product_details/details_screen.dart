@@ -1,6 +1,7 @@
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:shop_app/layouts/shopApp_Layout/cubit/cubit.dart';
 import 'package:shop_app/models/home_model.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -112,7 +113,10 @@ class ProductDetailsScreen extends StatelessWidget {
                           color: Colors.amber,
                           borderRadius: BorderRadius.circular(25),
                         ),
-                        child: MaterialButton(onPressed: (){}, child: Text("Add To Salla"),
+                        child: MaterialButton(onPressed: (){
+                          ShopAppCubit.get(context).checkIfItemInCart(model!.id!);
+                          Navigator.pop(context);
+                        }, child: Text("Add To Salla"),
                         ),
                       ),
                     ),
