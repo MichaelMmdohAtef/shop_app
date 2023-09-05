@@ -160,20 +160,20 @@ class ShopAppCubit extends Cubit<ShopAppStates>{
 
   ChangeFavoriteAndCartData? changeCartData;
   changeCarts(id){
-    emit(OnLoadingChangeFavoritesData());
+    emit(OnLoadingChangeCartsData());
     DioHelper.postData(url: "carts",data:{"product_id":id} ,token: token).then((value) {
       changeCartData=ChangeFavoriteAndCartData.fromjson(value.data);
       getCarts();
       getDataModel();
-      emit(OnSuccessChangeFavoritesData(changeCartData));
+      emit(OnSuccessChangeCartsData(changeCartData));
     }).catchError((onError){
       print(onError.toString());
-      emit(OnErrorChangeFavoritesData());
+      emit(OnErrorChangeCartsData());
     });
   }
 
   getCarts(){
-    emit(OnLoadingFavouritesData());
+    emit(OnLoadingGetCartsData());
     DioHelper.getData(url: "carts",token: token).then((value) {
       cartModel=GetCarts.fromjson(value.data);
       if(cartModel!.status==true){
@@ -182,11 +182,33 @@ class ShopAppCubit extends Cubit<ShopAppStates>{
         cartModel=null;
       }
       print(cartModel!.data!.items![1].products!.id);
-      emit(OnSuccessFavouritesData());
+      emit(OnSuccessGetCartsData());
     }).catchError((onError){
       print(onError.toString());
-      emit(OnErrorFavouritesData());
+      emit(OnErrorGetCartsData());
     });
   }
+GetCarts? updateCart;
+  updateCarts(){
+    emit(OnLoadingGetCartsData());
+    DioHelper.putData(url: "carts/3",token: token,data: {
+      "quantity":"3",
+      "product_id":"55"
+    }).then((value) {
+      updateCart=GetCarts.fromjson(value.data);
+      if(cartModel!.status==true){
+        updateCart=updateCart;
+      }else{
+        updateCart=null;
+      }
+      print(updateCart!.data!.items![1].quantity);
+      emit(OnSuccessGetCartsData());
+    }).catchError((onError){
+      print(onError.toString());
+      emit(OnErrorGetCartsData());
+    });
+  }
+
+
 
 }

@@ -33,3 +33,22 @@ class OnErrorSearchData extends ShopAppStates{}
 
 
 class OnFillHomeOrCategories extends ShopAppStates{}
+
+class OnLoadingChangeCartsData extends ShopAppStates{}
+class OnSuccessChangeCartsData extends ShopAppStates{
+  ChangeFavoriteAndCartData? model;
+  OnSuccessChangeCartsData(this.model);
+}
+class OnErrorChangeCartsData extends ShopAppStates{}
+
+class OnLoadingGetCartsData extends ShopAppStates{}
+class OnSuccessGetCartsData extends ShopAppStates{}
+class OnErrorGetCartsData extends ShopAppStates{}
+
+class OnLoadingUpdateCartsData extends ShopAppStates{}
+class OnSuccessUpdateCartsData extends ShopAppStates{}
+class OnErrorUpdateCartsData extends ShopAppStates{}
+
+class OnLoadingRemoveCartsData extends ShopAppStates{}
+class OnSuccessRemoveCartsData extends ShopAppStates{}
+class OnErrorRemoveCartsData extends ShopAppStates{}

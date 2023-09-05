@@ -36,7 +36,7 @@ class ProductCartScreen extends StatelessWidget {
                       color: Colors.amber,
                     ),
                   ),
-                  if (cubit.cartModel!.data!.items != null)
+                  if (cubit.cartModel != null)
                     Padding(
                       padding: const EdgeInsetsDirectional.only(
                         top: 2,
@@ -54,12 +54,64 @@ class ProductCartScreen extends StatelessWidget {
           ),
           body: ConditionalBuilder(
             condition: model != null,
-            builder: (context) => itemOfCart(model!.data!.items![1]),
+            builder: (context) => bodyScreen(model!),
             fallback: (context) => Center(child: CircularProgressIndicator()),
           ),
         );
       },
     );
+  }
+
+  Widget bodyScreen(GetCarts model){
+    return Column(
+        children: [
+          Expanded(
+            flex: 3,
+            child: ListView.separated(
+                physics: BouncingScrollPhysics(),
+                itemBuilder: (context, index) => itemOfCart(model.data!.items![index]),
+                separatorBuilder:(context, index) => SizedBox(height: 0),
+                itemCount:model.data!.items!.length),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+            Text(
+              "Total: ",
+              style: TextStyle(
+                color: Colors.blue,
+                height: 1.5,
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              "${model.data!.total} \$",
+              style: TextStyle(
+                overflow: TextOverflow.ellipsis,
+                height: 1.5,
+                fontSize: 25,
+              ),
+              maxLines: 1,
+            ),
+                Spacer(),
+                TextButton(onPressed: (){}, child:Text(
+                  "Pay",
+
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.amber,
+                  ),
+                ),),
+              ],
+            ),
+          ),
+        ],
+      );
   }
 
   Widget itemOfCart(CartsDataModel model) {
@@ -114,7 +166,7 @@ class ProductCartScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "${model.products!.name}",
+                          "${model.products!.name} \$",
                           style: TextStyle(
                             overflow: TextOverflow.ellipsis,
                             height: 1.5,
@@ -130,7 +182,7 @@ class ProductCartScreen extends StatelessWidget {
                           style: TextStyle(height: 1.5, color: Colors.blue),
                         ),
                         Text(
-                          "${model.products!.price}",
+                          "${model.products!.price} \$",
                           style: TextStyle(
                             height: 1.5,
                           ),
@@ -147,7 +199,7 @@ class ProductCartScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "${model.products!.oldPrice}",
+                          "${model.products!.oldPrice} \$",
                           style: TextStyle(
                             height: 1.5,
                             decoration: TextDecoration.lineThrough,
