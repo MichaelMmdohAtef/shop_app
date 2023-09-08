@@ -1,23 +1,21 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/modules/settings/cubit/cubit.dart';
 import 'package:shop_app/modules/settings/cubit/states.dart';
 import 'package:toast/toast.dart';
 
-import '../../layouts/shopApp_Layout/cubit/cubit.dart';
-import '../../layouts/shopApp_Layout/cubit/states.dart';
+
 import '../../shared/components/components.dart';
 
 class SettingsScreen extends StatelessWidget {
    SettingsScreen({Key? key}) : super(key: key);
 
-  TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
 
 
-  var formKey=GlobalKey<FormState>();
+   final formKey=GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -58,14 +56,14 @@ class SettingsScreen extends StatelessWidget {
                     children: [
                       Text(
                         'Profile',
-                        style: Theme.of(context).textTheme.headline3!
+                        style: Theme.of(context).textTheme.displaySmall!
                             .copyWith(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'shortBaby',
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 15,
                       ),
                       defaultFormField(
@@ -79,7 +77,7 @@ class SettingsScreen extends StatelessWidget {
                         hint: "enter your Name",
                         typeKeyboard: TextInputType.text,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 15,
                       ),
                       defaultFormField(
@@ -88,7 +86,7 @@ class SettingsScreen extends StatelessWidget {
                         hint: "please enter your email",
                         onValidate: (value) {
                           print(value!.split("@")[0]);
-                          if(value!.split("@")[0].isEmpty  || value.isEmpty) {
+                          if(value.split("@")[0].isEmpty  || value.isEmpty) {
                             return "Email Address can not be embty";
                           }
                           if(value.contains("@gmail.com")){
@@ -102,7 +100,7 @@ class SettingsScreen extends StatelessWidget {
                         prefixIcon: Icons.email,
                         typeKeyboard: TextInputType.emailAddress,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 15,
                       ),
                       defaultFormField(
@@ -120,7 +118,7 @@ class SettingsScreen extends StatelessWidget {
                         prefixIcon: Icons.phone,
                         typeKeyboard: TextInputType.number,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 15,
                       ),
                       defaultButton(onPressed: () {

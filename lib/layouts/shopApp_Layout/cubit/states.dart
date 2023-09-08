@@ -52,3 +52,7 @@ class OnErrorUpdateCartsData extends ShopAppStates{}
 class OnLoadingRemoveCartsData extends ShopAppStates{}
 class OnSuccessRemoveCartsData extends ShopAppStates{}
 class OnErrorRemoveCartsData extends ShopAppStates{}
+
+
+class OnEnlargeQuantity extends ShopAppStates{}
+class OnMinimizeQuantity extends ShopAppStates{}

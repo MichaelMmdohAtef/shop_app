@@ -16,6 +16,7 @@ class ProductCartScreen extends StatelessWidget {
       builder: (context, state) {
         var cubit = ShopAppCubit.get(context);
         GetCarts? model = cubit.cartModel;
+        // print("nmn ${model!.data!.items![1]}");
         return Scaffold(
           appBar: AppBar(
             title: Text("My Shoping Cart"),
@@ -54,7 +55,7 @@ class ProductCartScreen extends StatelessWidget {
           ),
           body: ConditionalBuilder(
             condition: model != null,
-            builder: (context) => bodyScreen(model!),
+            builder: (context) => bodyScreen(model!,context),
             fallback: (context) => Center(child: CircularProgressIndicator()),
           ),
         );
@@ -62,14 +63,14 @@ class ProductCartScreen extends StatelessWidget {
     );
   }
 
-  Widget bodyScreen(GetCarts model){
+  Widget bodyScreen(GetCarts model,BuildContext context){
     return Column(
         children: [
           Expanded(
             flex: 3,
             child: ListView.separated(
                 physics: BouncingScrollPhysics(),
-                itemBuilder: (context, index) => itemOfCart(model.data!.items![index]),
+                itemBuilder: (context, index) => itemOfCart(model.data!.items![index],context,index),
                 separatorBuilder:(context, index) => SizedBox(height: 0),
                 itemCount:model.data!.items!.length),
           ),
@@ -114,12 +115,12 @@ class ProductCartScreen extends StatelessWidget {
       );
   }
 
-  Widget itemOfCart(CartsDataModel model) {
+  Widget itemOfCart(CartsDataModel model,BuildContext context,int index) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Dismissible(
         onDismissed: (value){
-          
+          ShopAppCubit.get(context).removeProductFromCart(model.products!.id!,index);
         },
         background: Container(
           color: Colors.red,
@@ -223,7 +224,9 @@ class ProductCartScreen extends StatelessWidget {
                               maxRadius: 10,
                               backgroundColor: Colors.blue,
                               child: IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    ShopAppCubit.get(context).enlargeQuantity(model.id!);
+                                  },
                                   padding: EdgeInsets.all(0),
                                   icon: Icon(
                                     Icons.add,
@@ -239,7 +242,9 @@ class ProductCartScreen extends StatelessWidget {
                               backgroundColor: Colors.blue,
                               child: Center(
                                 child: IconButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      ShopAppCubit.get(context).minimizeQuantity(model.id!);
+                                    },
                                     padding: EdgeInsets.only(
                                       bottom: 60,
                                     ),

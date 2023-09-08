@@ -1,5 +1,4 @@
-import 'package:bloc/bloc.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/layouts/shopApp_Layout/cubit/states.dart';
@@ -28,16 +27,17 @@ class ShopAppCubit extends Cubit<ShopAppStates>{
   CategoryModelData? categories;
   Map<int?,bool?>? favourites={};
   Map<int?,bool?>? carts={};
+  Map<int?,int?>? quantities={};
   int currentIndex=0;
   GetFavorites? favouriteModel;
   GetCarts? cartModel;
   bool checkHomeModel=false;
   bool checkCategories=false;
   List<Widget> screens=[
-    HomeScreen(),
-    CategoriesScreen(),
-    FavoritesScreen(),
-    SettingsScreen(),
+    const HomeScreen(),
+    const CategoriesScreen(),
+    const FavoritesScreen(),
+     SettingsScreen(),
   ];
 
   List<BottomNavigationBarItem> items=[
@@ -47,9 +47,9 @@ class ShopAppCubit extends Cubit<ShopAppStates>{
     BottomNavigationBarItem(icon: Icon(Icons.settings),label: "Settings"),
   ];
 
-  onFillHomeOrCategories({bool? homeModelch,bool? categoriesch}){
-    this.checkHomeModel=homeModelch!=null?true:this.checkHomeModel;
-    this.checkCategories=categoriesch!=null?true:this.checkCategories;
+  onFillHomeOrCategories({bool? homeModelCh,bool? categoriesCh}){
+    this.checkHomeModel=homeModelCh!=null?true:this.checkHomeModel;
+    this.checkCategories=categoriesCh!=null?true:this.checkCategories;
     emit(OnFillHomeOrCategories());
   }
 
@@ -61,7 +61,6 @@ class ShopAppCubit extends Cubit<ShopAppStates>{
   getDataModel() {
     emit(OnLoadingGetModelData());
     DioHelper.getData(url: HOME,token: token).then((value) async{
-
      await changeProductModel(HomeModel.fromjson(value.data));
       this.homeModel!.model!.products.forEach((e) {
         favourites!.addAll({e.id:e.isFavorite});
@@ -89,10 +88,8 @@ class ShopAppCubit extends Cubit<ShopAppStates>{
   getCategories(){
     emit(OnLoadingCategoriesData());
     DioHelper.getData(url: GET_CATEGORIES,token: token).then((value) {
-
       changeCategoryModel(CategoryModelData.fromjson(value.data));
       print(categories!.model!.data[0]!.name);
-
       emit(OnSuccessCategoriesData());
     }).catchError((onError){
       print(onError.toString());
@@ -116,7 +113,6 @@ class ShopAppCubit extends Cubit<ShopAppStates>{
   getFavourites(){
     emit(OnLoadingFavouritesData());
     DioHelper.getData(url: FAVORITES,token: token).then((value) {
-
       favouriteModel=GetFavorites.fromjson(value.data);
       if(favouriteModel!.status==true){
         favouriteModel=favouriteModel;
@@ -133,16 +129,14 @@ class ShopAppCubit extends Cubit<ShopAppStates>{
   }
 
   SearchModel? searchData;
-  getSearchItems(String item){
+  getSearchItems(String item)async{
     emit(OnLoadingSearchData());
-    DioHelper.postData(url: SEARCH,token: token,data: {
+   await DioHelper.postData(url: SEARCH,token: token,data: {
       "text":item
     }).then((value) {
-
       searchData=SearchModel.fromjson(value.data);
       print(searchData!.model!.data![1].name!);
-
-      // emit(OnSuccessSearchData());
+      emit(OnSuccessSearchData());
     }).catchError((onError){
       print(onError.toString());
       emit(OnErrorSearchData());
@@ -159,9 +153,9 @@ class ShopAppCubit extends Cubit<ShopAppStates>{
   }
 
   ChangeFavoriteAndCartData? changeCartData;
-  changeCarts(id){
+ Future changeCarts(id) async{
     emit(OnLoadingChangeCartsData());
-    DioHelper.postData(url: "carts",data:{"product_id":id} ,token: token).then((value) {
+   await DioHelper.postData(url: "carts",data:{"product_id":id} ,token: token).then((value) {
       changeCartData=ChangeFavoriteAndCartData.fromjson(value.data);
       getCarts();
       getDataModel();
@@ -172,43 +166,84 @@ class ShopAppCubit extends Cubit<ShopAppStates>{
     });
   }
 
-  getCarts(){
+   getCarts() async{
     emit(OnLoadingGetCartsData());
-    DioHelper.getData(url: "carts",token: token).then((value) {
+   await DioHelper.getData(url: "carts",token: token).then((value) {
       cartModel=GetCarts.fromjson(value.data);
       if(cartModel!.status==true){
         cartModel=cartModel;
+        cartModel!.data!.items!.forEach((element) {
+          quantities!.addAll({element.id:element.quantity});
+        });
       }else{
         cartModel=null;
       }
       print(cartModel!.data!.items![1].products!.id);
       emit(OnSuccessGetCartsData());
     }).catchError((onError){
-      print(onError.toString());
+      print("${onError.toString()}");
       emit(OnErrorGetCartsData());
     });
-  }
-GetCarts? updateCart;
-  updateCarts(){
-    emit(OnLoadingGetCartsData());
-    DioHelper.putData(url: "carts/3",token: token,data: {
-      "quantity":"3",
-      "product_id":"55"
-    }).then((value) {
-      updateCart=GetCarts.fromjson(value.data);
-      if(cartModel!.status==true){
-        updateCart=updateCart;
-      }else{
-        updateCart=null;
-      }
-      print(updateCart!.data!.items![1].quantity);
-      emit(OnSuccessGetCartsData());
-    }).catchError((onError){
-      print(onError.toString());
-      emit(OnErrorGetCartsData());
-    });
+   quantities!.forEach((key, value) {
+     print("id: ${key} \n quantity: ${value}");
+   });
   }
 
+  enlargeQuantity(int id){
+   quantities!.forEach((key, value) {
+     if(key == id){
+       quantities![key]=value! + 1 ;
+     }
+   });
+   // getCarts();
+   emit(OnEnlargeQuantity());
+  }
+
+  minimizeQuantity(int id){
+    quantities!.forEach((key, value) {
+      if(key == id){
+        quantities![key]=value! - 1 ;
+      }
+    });
+    // getCarts();
+    emit(OnMinimizeQuantity());
+  }
+
+// GetCarts? updateCart;
+//   updateCarts(){
+//     emit(OnLoadingGetCartsData());
+//     DioHelper.putData(url: "carts/3",token: token,data: {
+//       "quantity":"3",
+//       "product_id":"55"
+//     }).then((value) {
+//       updateCart=GetCarts.fromjson(value.data);
+//       if(cartModel!.status==true){
+//         updateCart=updateCart;
+//       }else{
+//         updateCart=null;
+//       }
+//       print(updateCart!.data!.items![1].quantity);
+//       emit(OnSuccessGetCartsData());
+//     }).catchError((onError){
+//       print(onError.toString());
+//       emit(OnErrorGetCartsData());
+//     });
+//   }
+
+
+
+  removeProductFromCart(int id,int index)async{
+      cartModel!.data!.items!.removeAt(index);
+      emit(OnLoadingRemoveCartsData());
+     await changeCarts(id).then((value){
+        toast(message: "this product Removed Successfully from your cart", status: toastStatus.SUCCESS);
+        emit(OnSuccessRemoveCartsData());
+      }).catchError((onError){
+        toast(message: onError.toString(), status: toastStatus.ERROR);
+        emit(OnErrorRemoveCartsData());
+      });
+
+  }
 
 
 }
