@@ -62,13 +62,11 @@ class MyApp extends StatelessWidget {
     ShopAppCubit()..getDataModel()
         ..getCategories()
         ..getFavourites()
-      ..getCarts()
-      ..updateCarts()
-      ,
+      ..getCarts(),
     child: BlocConsumer<ShopAppCubit,ShopAppStates>(
       listener:(context,states){} ,
       builder:(context,states){
-      var cubit=ShopAppCubit.get(context);
+      // var cubit=ShopAppCubit.get(context);
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Flutter Demo',

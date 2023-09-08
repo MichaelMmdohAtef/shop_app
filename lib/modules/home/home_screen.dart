@@ -13,16 +13,16 @@ import '../../layouts/shopApp_Layout/cubit/states.dart';
 import '../../shared/components/components.dart';
 
 class HomeScreen extends StatelessWidget {
-   HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen();
 
 
    changeVariables(BuildContext context,ShopAppCubit cubit)async{
      if(ShopAppCubit.get(context).homeModel!=null) {
-      cubit.onFillHomeOrCategories(homeModelch: true);
+      cubit.onFillHomeOrCategories(homeModelCh: true);
     }
 
     if(ShopAppCubit.get(context).categories!=null) {
-      cubit.onFillHomeOrCategories(categoriesch: true);
+      cubit.onFillHomeOrCategories(categoriesCh: true);
     }
   }
 

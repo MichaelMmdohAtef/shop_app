@@ -11,8 +11,7 @@ class GetCarts{
 
 class GetCartsItems{
 
-  double? total;
-
+  dynamic total;
   List<CartsDataModel>? items=[];
 
   GetCartsItems.fromjson(Map<String,dynamic> json){
@@ -26,6 +25,7 @@ class CartsDataModel{
   int? id;
   int? quantity;
   CartsProducts? products;
+
   CartsDataModel.fromjson(Map<String,dynamic> json){
     this.id=json['id'];
     this.quantity=json['quantity'];
@@ -34,6 +34,7 @@ class CartsDataModel{
 
 }
 class CartsProducts{
+
   int? id;
   dynamic price;
   dynamic oldPrice;
